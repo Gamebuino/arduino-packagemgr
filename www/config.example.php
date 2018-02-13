@@ -5,3 +5,5 @@ $SQL_CONFIG = [
 	'password' => 'password',
 	'database' => 'database',
 ];
+
+$ROOTURL = 'http://localhost/gamebuino-mgr';

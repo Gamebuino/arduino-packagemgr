@@ -2,6 +2,11 @@
 // call at package_gamebuino_index.json via nginx
 header('Content-Type: application/json');
 
+$CACHEFILE = realpath(dirname(__FILE__)).'/package_cache.json';
+if (file_exists($CACHEFILE)) {
+	echo file_get_contents($CACHEFILE);
+	exit;
+}
 
 
 include_once(realpath(dirname(__FILE__)).'/sql.php');
@@ -14,7 +19,7 @@ $json = [
 $platforms_cache = [];
 $boards_cache = [];
 $tooldep_cache = [];
-foreach ($sql->query("SELECT `id`, `name`, `maintainer`, `url`, `online_help` FROM `packages`", [$pid]) as $package) {
+foreach ($sql->query("SELECT `id`, `name`, `maintainer`, `url`, `online_help` FROM `packages`", []) as $package) {
 	$pid = (int)$package['id'];
 
 	$package_json = [
@@ -70,4 +75,6 @@ foreach ($sql->query("SELECT `id`, `name`, `maintainer`, `url`, `online_help` FR
 	}
 	$json['packages'][] = $package_json;
 }
-echo json_encode($json);
+$s = json_encode($json);
+file_put_contents($CACHEFILE, $s);
+echo $s;
